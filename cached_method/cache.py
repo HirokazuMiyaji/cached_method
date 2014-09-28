@@ -1,24 +1,34 @@
 # coding: utf-8
+from __future__ import absolute_import, unicode_literals
 
 import threading
 
 _cache = threading.local()
-_cache.container = {}
 
-class cache(object):
-    @classmethod
-    def get(cls, key, *args):
+
+class Cache(object):
+
+    def __init__(self, name="data"):
+        self.name = name
+        setattr(_cache, self.name, {})
+
+    def get(self, key, default=None):
         try:
-            return _cache.container[key]
+            return getattr(_cache, self.name)[key]
+        except KeyError:
+            return default
+
+    def set(self, key, value):
+        getattr(_cache, self.name)[key] = value
+
+    def delete(self, key):
+        try:
+            del getattr(_cache, self.name)[key]
         except:
-            if args:
-                return args[0]
-            raise
+            pass
 
-    @classmethod
-    def set(cls, key, value):
-        _cache.container[key] = value
+    def clear(self):
+        setattr(_cache, self.name, {})
 
-    @classmethod
-    def delete(cls, key):
-        del _cache.container[key]
+
+cache = Cache()
