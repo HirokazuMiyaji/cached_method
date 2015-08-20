@@ -31,7 +31,7 @@ def cached_method_per_request(method):
             if result:
                 _cache.set(key, result)
         return result
-    return decrator
+    return decorator
 
 
 def delete_cache_per_request(obj, method, *args, **kwargs):
